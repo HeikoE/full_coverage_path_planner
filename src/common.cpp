@@ -201,94 +201,97 @@ bool a_star_to_open_space(std::vector<std::vector<bool> > const &grid, gridNode_
   }
 }
 
-void printGrid(std::vector<std::vector<bool> > const& grid, std::vector<std::vector<bool> > const& visited,
-               std::list<Point_t> const& path)
+void printGrid(const std::vector<std::vector<bool>>& grid, 
+               const std::vector<std::vector<bool>>& visited,
+               const std::list<Point_t>& path)
 {
-  for (uint iy = grid.size() - 1; iy >= 0; --iy)
-  {
-    for (uint ix = 0; ix < grid[0].size(); ++ix)
-    {
-      if (visited[iy][ix])
-      {
-        if (ix == path.front().x && iy == path.front().y)
-        {
-          std::cout << "\033[1;32m▓\033[0m";  // Show starting position in green color
-        }
-        else if (ix == path.back().x && iy == path.back().y)
-        {
-          std::cout << "\033[1;31m▓\033[0m";  // Show stopping position in red color
-        }
-        else if (visited[iy][ix] && grid[iy][ix])
-        {
-          std::cout << "\033[1;33m▓\033[0m";  // Show walls in yellow color
-        }
-        else
-        {
-          std::cout << "\033[1;36m▓\033[0m";
-        }
-      }
-      else
-      {
-        std::cout << "\033[1;37m▓\033[0m";
-      }
+    if (grid.empty() || visited.empty() || grid.size() != visited.size()) {
+        std::cerr << "Grid and visited arrays must be non-empty and of the same size\n";
+        return;
     }
-    std::cout << "\n";
-  }
+
+    for (int iy = static_cast<int>(grid.size()) - 1; iy >= 0; --iy) {
+        for (uint ix = 0; ix < grid[0].size(); ++ix) {
+            bool isStart = !path.empty() && ix == path.front().x && iy == path.front().y;
+            bool isStop = !path.empty() && ix == path.back().x && iy == path.back().y;
+            bool isWall = visited[iy][ix] && grid[iy][ix];
+
+            if (isStart) {
+                std::cout << "\033[1;32m▓\033[0m";  // Green for start
+            } else if (isStop) {
+                std::cout << "\033[1;31m▓\033[0m";  // Red for stop
+            } else if (isWall) {
+                std::cout << "\033[1;33m▓\033[0m";  // Yellow for wall
+            } else if (visited[iy][ix]) {
+                std::cout << "\033[1;36m▓\033[0m";  // Some other color for visited
+            } else {
+                std::cout << "\033[1;37m▓\033[0m";  // Default color
+            }
+        }
+        std::cout << "\n";
+    }
 }
 
-void printGrid(std::vector<std::vector<bool> > const& grid, std::vector<std::vector<bool> > const& visited,
-               std::list<gridNode_t> const& path, gridNode_t start, gridNode_t end)
-{
-  for (uint iy = grid.size() - 1; iy >= 0; --iy)
-  {
-    for (uint ix = 0; ix < grid[0].size(); ++ix)
-    {
-      if (visited[iy][ix])
-      {
-        if (ix == start.pos.x && iy == start.pos.y)
-        {
-          std::cout << "\033[1;32m▓\033[0m";  // Show starting position in green color
-        }
-        else if (ix == end.pos.x && iy == end.pos.y)
-        {
-          std::cout << "\033[1;31m▓\033[0m";  // Show stopping position in red color
-        }
-        else if (visited[iy][ix] && grid[iy][ix])
-        {
-          std::cout << "\033[1;33m▓\033[0m";  // Show walls in yellow color
-        }
-        else
-        {
-          std::cout << "\033[1;36m▓\033[0m";
-        }
-      }
-      else
-      {
-        std::cout << "\033[1;37m▓\033[0m";
-      }
+void printGrid(std::vector<std::vector<bool> > const& grid,
+               std::vector<std::vector<bool> > const& visited,
+               std::list<gridNode_t> const& path,
+               gridNode_t start,
+               gridNode_t end) {
+    // Check for empty grid or visited array, or if their sizes are mismatched
+    if (grid.empty() || visited.empty() || grid.size() != visited.size()) {
+        std::cerr << "Grid and visited arrays must be non-empty and of the same size\n";
+        return;
     }
-    std::cout << "\n";
-  }
+
+    // Check for consistent row sizes in grid and visited
+    for (size_t i = 0; i < grid.size(); ++i) {
+        if (grid[i].size() != visited[i].size() || grid[i].size() != grid[0].size()) {
+            std::cerr << "Inconsistent row sizes in grid or visited arrays\n";
+            return;
+        }
+    }
+
+    for (int iy = static_cast<int>(grid.size()) - 1; iy >= 0; --iy) {
+        for (size_t ix = 0; ix < grid[iy].size(); ++ix) {
+            bool isStart = ix == start.pos.x && iy == start.pos.y;
+            bool isStop = ix == end.pos.x && iy == end.pos.y;
+            bool isWall = visited[iy][ix] && grid[iy][ix];
+
+            if (isStart) {
+                std::cout << "\033[1;32m▓\033[0m";  // Green for start
+            } else if (isStop) {
+                std::cout << "\033[1;31m▓\033[0m";  // Red for stop
+            } else if (isWall) {
+                std::cout << "\033[1;33m▓\033[0m";  // Yellow for wall
+            } else if (visited[iy][ix]) {
+                std::cout << "\033[1;36m▓\033[0m";  // Some other color for visited
+            } else {
+                std::cout << "\033[1;37m▓\033[0m";  // Default color
+            }
+        }
+        std::cout << "\n";
+    }
 }
 
-void printGrid(std::vector<std::vector<bool> > const& grid)
-{
-  for (uint iy = grid.size() - 1; iy >= 0; --iy)
-  {
-    for (uint ix = 0; ix < grid[0].size(); ++ix)
-    {
-      if (grid[iy][ix])
-      {
-        std::cout << "\033[1;36m▓\033[0m";
-      }
-      else
-      {
-        std::cout << "\033[1;37m▓\033[0m";
-      }
+
+void printGrid(const std::vector<std::vector<bool>>& grid) {
+    if (grid.empty()) {
+        std::cerr << "Grid array must not be empty\n";
+        return;
     }
-    std::cout << "\n";
-  }
+
+    for (int iy = static_cast<int>(grid.size()) - 1; iy >= 0; --iy) {
+        for (size_t ix = 0; ix < grid[iy].size(); ++ix) {
+            if (grid[iy][ix]) {
+                std::cout << "\033[1;36m▓\033[0m";  // Color for true value
+            } else {
+                std::cout << "\033[1;37m▓\033[0m";  // Color for false value
+            }
+        }
+        std::cout << "\n";
+    }
 }
+
 
 std::list<Point_t> map_2_goals(std::vector<std::vector<bool> > const& grid, bool value_to_search)
 {
