@@ -52,7 +52,7 @@ public:
                                         int &multiple_pass_counter,
                                         int &visited_counter);
 
-private:
+//private:
   /**
    * @brief Given a goal pose in the world, compute a plan
    * @param start The start pose
