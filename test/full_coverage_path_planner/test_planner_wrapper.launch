@@ -38,12 +38,14 @@
         <param name="target_x_vel" value="$(arg target_x_vel)"/>
         <param name="target_yaw_vel" value="$(arg target_yaw_vel)"/>
         <remap from="path" to="/coverage_planner_wrapper_node/spiral_stc_planner/plan"/>
+        <remap from="pause" to="~pause"/>
+        <remap from="trajectory" to="~trajectory"/>
     </node>
 
     <!--Tracking_pid tries to get the robot as close to it's goal point as possible-->
     <node name="local_pid_controller" pkg="tracking_pid" type="controller" output="screen">
         <remap from="move_base/cmd_vel" to="/cmd_vel"/>
-        <remap from="local_trajectory" to="trajectory"/>
+        <remap from="local_trajectory" to="/interpolator/trajectory"/>
         <param name="controller_debug_enabled" value="True"/>
         <param name="track_base_link" value="true"/>
         <param name="l" value="0.5"/>
